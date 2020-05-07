@@ -1,0 +1,76 @@
+//ACLs (Access Control Lists)
+ 
+// ACL "permite-recursiva" v�o ficar os hosts est�o autorizados a fazer 
+// consultas recursivas atrav�s deste servidor.
+acl permite-recursiva {
+        127.0.0.1;
+        ::1;
+        250.250.0.0/23;
+        192.168.0.0/16;
+        172.16.0.0/12;
+        10.0.0.0/8;
+};
+ 
+options {
+    // O diret�rio de trabalho do servidor
+    // Quaisquer caminho n�o informado ser� tomado como  padr�o este direct�rio
+    directory "/var/cache/bind";
+ 
+    //Suporte a DNSSEC
+    dnssec-enable yes;
+    dnssec-validation auto;
+ 
+    // Conforme RFC1035
+    // https://www.ietf.org/rfc/rfc1035.txt
+    auth-nxdomain no;
+ 
+    // Respondendo para IPv4 e IPv6
+    // Porta 53 estar� aberta para ambos v4 e v6
+    listen-on { any; };
+    listen-on-v6 { 127.0.0.1; };
+ 
+    // Limita��o da taxa de resposta no sistema de nomes de dom�nio (DNS RRL)
+    //rate-limit {
+     //   responses-per-second 15;
+    //    window 5;
+   // };
+ 
+    // Melhora o desempenho do servidor, reduzindo os volumes de dados de sa�da.
+    // O padr�o BIND � (no) n�o.
+    minimal-responses yes;
+ 
+    // Especifica quais hosts est�o autorizados a fazer consultas 
+    // recursivas atrav�s deste servidor.
+    // Aqui que voc� vai informar os IPs da sua rede que voc� ir� permitir consultar os DNS.
+    allow-recursion {
+        permite-recursiva;
+    };
+ 
+    // Endere�o est�o autorizados a emitir consultas ao cache local,
+    // sem acesso ao cache local as consultas recursivas s�o in�teis.
+    allow-query-cache {
+        permite-recursiva;
+    };
+ 
+    // Especifica quais hosts est�o autorizados a fazer perguntas DNS comuns.
+    allow-query { any; };
+ 
+    // Especifica quais hosts est�o autorizados a receber transfer�ncias de zona a partir do servidor.
+    // Seu servidor Secund�rio, no nosso caso vou deixar ent�o o ips dos dois servidores v4 e v6.
+    allow-transfer {
+        10.5.0.6;
+        
+    };
+    also-notify {
+        10.5.0.6;
+        
+    };
+ 
+    // Esta op��o faz com que o servidor slave ao fazer a transfer�ncia de zonas
+    // mastes deste servidor nao compile o arquivo, assim no outro servidor o arquivo 
+    // da zona ter� um texto "puro"
+    masterfile-format text;
+ 
+    // Para evitar que vase a versao do Bind, definimos um nome
+    version "RR DNS Server";
+};

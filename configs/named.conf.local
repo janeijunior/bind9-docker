@@ -1,0 +1,17 @@
+
+//include "/etc/bind/named.conf.default-zones";
+//include "/etc/bind/named.conf.rfc1918";
+
+zone "inmanager.com.br" {
+    file "/etc/bind/db.inmanager.com.br";
+    type master;
+    notify yes;
+    also-notify { 10.5.0.6; };
+    allow-transfer { 10.5.0.6; };
+};
+
+//zone "4.3.2.1.in-addr.arpa" {
+//    type master;
+//    file "/var/cache/bind/1.2.3.4.rev";
+//    notify yes;
+//};

@@ -1,0 +1,24 @@
+$TTL 8h ; 
+@	IN	SOA	ns1.inmanager.com.br. root.inmanager.com.br. ( 
+			2017071101 ; serial 
+			3h ; refresh 
+			30m ; retry 
+			4d ; expiry 
+			1h ; negative cache 
+); 
+@			IN		NS	ns1.inmanager.com.br. 
+@			IN		NS	ns2.inmanager.com.br. 
+@			IN		MX	5 mail.inmanager.com.br. 
+ns1			IN		A	10.5.0.5 
+ns2			IN		A	10.5.0.6
+samba		IN		A	10.10.10.5 
+dhcp		IN		A	10.10.10.4 
+www			IN		A	10.10.10.7 
+web			IN		CNAME	www 
+ftp			IN		CNAME	www 
+firewall 	IN		A	10.10.10.1 
+proxy		IN		CNAME	firewall 
+mail	  	IN		A	10.10.10.3 
+smtp		IN 		CNAME	mail 
+imap	 	IN  	CNAME	mail 
+pop3	 	IN  	CNAME	mail
